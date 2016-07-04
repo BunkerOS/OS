@@ -15,6 +15,9 @@ app_list.append(KeysRepeatWindow)
 from .process import ProcessManagerWindow
 app_list.append(ProcessManagerWindow)
 
+from .picviewer import PicViewer
+app_list.append(PicViewer)
+
 # cette App doit être ajoutée en dernier obligatoirement
 from .desktop import Desktop
 app_list.append(Desktop)
