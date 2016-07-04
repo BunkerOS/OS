@@ -37,8 +37,6 @@ class ProcessManagerWindow(Window):
                 s = "UNACTIVE"
             elif window.state == WStates.NOT_RESPONDING:
                 s = "NOT RESPONDING"
-            elif window.state == WStates.WAITING:
-                s = "WAITING"
 
             name = font_petite.render(window.get_title(), 1, BLACK)
             status = font_petite.render(s, 1, BLACK)

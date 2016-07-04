@@ -26,10 +26,13 @@ class ProcessManager:
 
     @staticmethod
     def update_process(process):
-        if process.state != WStates.UNACTIVE:
+        if process.state not in (WStates.UNACTIVE, WStates.NOT_RESPONDING):
             start = time.time()
             process.update()
-            ProcessManager.instance._execution_datas[process.id]['exc_times'].append((time.time() - start) * 1000)
+            try:
+                ProcessManager.instance._execution_datas[process.id]['exc_times'].append((time.time() - start) * 1000)
+            except Exception:
+                process.state = WStates.NOT_RESPONDING
         else:
             ProcessManager.instance._execution_datas[process.id]['draw_times'].append(0.0)
         if len(ProcessManager.instance._execution_datas[process.id]['exc_times']) > ProcessManager.MAX:
@@ -38,10 +41,13 @@ class ProcessManager:
 
     @staticmethod
     def draw_process(process, *args):
-        if process.state != WStates.UNACTIVE:
+        if process.state not in (WStates.UNACTIVE, WStates.NOT_RESPONDING):
             start = time.time()
             process.draw(*args)
-            ProcessManager.instance._execution_datas[process.id]['draw_times'].append((time.time() - start) * 1000)
+            try:
+                ProcessManager.instance._execution_datas[process.id]['draw_times'].append((time.time() - start) * 1000)
+            except Exception:
+                process.state = WStates.NOT_RESPONDING
         else:
             ProcessManager.instance._execution_datas[process.id]['draw_times'].append(0.0)
         if len(ProcessManager.instance._execution_datas[process.id]['draw_times']) > ProcessManager.MAX:
@@ -50,16 +56,12 @@ class ProcessManager:
 
     @staticmethod
     def remove_process(i):
-        ProcessManager.instance._windows.pop(i)
+        ProcessManager.windows()[i].state = WStates.UNACTIVE
 
     @staticmethod
     def set_as_toplevel(i):
         ProcessManager.instance._windows[0:0] = [ProcessManager.instance._windows.pop(i)]
         ProcessManager.windows()[0].state = WStates.ACTIVE
-
-    @staticmethod
-    def kill_process(i):
-        ProcessManager.instance._windows.pop(i)
 
     @staticmethod
     def get_first_active():

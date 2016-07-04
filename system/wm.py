@@ -153,7 +153,7 @@ class DesktopManager:
         process_manager.ProcessManager.set_as_toplevel(y)
 
     def kill_prog(self, y):
-        process_manager.ProcessManager.kill_process(y)
+        process_manager.ProcessManager.remove_process(y)
 
     def print_time(self):
         t = time.strftime("%A")

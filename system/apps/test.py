@@ -17,7 +17,7 @@ class App(Window):
 
     def draw_content(self):
         # fond
-        pygame.draw.rect(self._content, self.couleur, (0, 0) + self.size)
+        pygame.draw.rect(self._content, self.couleur, (0, 0) + tuple(self.size))
 
         fps = font.render(str(int(ProcessManager.clock().get_fps())), 1, BLACK)
         self._content.blit(fps, ((100 - fps.get_width()) // 2, (100 - fps.get_height()) // 2))

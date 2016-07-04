@@ -18,6 +18,9 @@ app_list.append(ProcessManagerWindow)
 from .picviewer import PicViewer
 app_list.append(PicViewer)
 
+from .seveci import SeveciShell
+app_list.append(SeveciShell)
+
 # cette App doit être ajoutée en dernier obligatoirement
 from .desktop import Desktop
 app_list.append(Desktop)

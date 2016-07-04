@@ -10,7 +10,6 @@ class WStates(Enum):
     ACTIVE = 0
     UNACTIVE = 1
     NOT_RESPONDING = 2
-    WAITING = 3
 
 
 class Point:
