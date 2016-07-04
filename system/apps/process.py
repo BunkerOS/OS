@@ -42,8 +42,8 @@ class ProcessManagerWindow(Window):
 
             name = font_petite.render(window.get_title(), 1, BLACK)
             status = font_petite.render(s, 1, BLACK)
-            if len(ProcessManager.execution_datas()[window.get_title()]['exc_times']) >= 1:
-                dt = "%3.2f" % (sum(ProcessManager.execution_datas()[window.get_title()]['exc_times']) / len(ProcessManager.execution_datas()[window.get_title()]['exc_times']))
+            if len(ProcessManager.execution_datas()[window.id]['exc_times']) >= 1:
+                dt = "%3.2f" % (sum(ProcessManager.execution_datas()[window.id]['exc_times']) / len(ProcessManager.execution_datas()[window.id]['exc_times']))
             else:
                 dt = "NONE"
             dt = font_petite.render(dt, 1, BLACK)

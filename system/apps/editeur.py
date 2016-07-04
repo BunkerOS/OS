@@ -11,7 +11,7 @@ class EditeurTexte(Window):
             titre="Text Editor",
             version=1.0,
             pos=(0, 0),
-            size=screen.get_size(),
+            size=(screen.get_width() // 2, screen.get_height() // 2),
             couleur=WHITE
         )
         self.texts = {

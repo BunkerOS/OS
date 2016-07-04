@@ -22,8 +22,8 @@ class Window:
         self.cote_c = cote_c
         self.state = WStates.ACTIVE
         self.escape_btn = (
-            self.pos.x + self.size.x - (EPAISSEUR_BARRE - self.cote_c) // 2 - self.cote_c,
-            self.pos.y + (EPAISSEUR_BARRE - self.cote_c) // 2,
+            self.size.x - (EPAISSEUR_BARRE - self.cote_c) // 2 - self.cote_c,
+            (EPAISSEUR_BARRE - self.cote_c) // 2,
             self.cote_c,
             self.cote_c
         )
@@ -51,7 +51,7 @@ class Window:
         # titre
         self.screen.blit(font.render(self.fen_name, 1, BLACK), (self.pos.x + 2, self.pos.y + 2))
         # croix
-        pygame.draw.rect(self.screen, RED, self.escape_btn)
+        pygame.draw.rect(self.screen, RED, (self.escape_btn[0] + self.pos.x, self.escape_btn[1] + self.pos.y) + self.escape_btn[2:])
 
     def draw_content(self):
         # fond
@@ -76,10 +76,10 @@ class Window:
         return self.fen_name
 
     def move(self, xd, yd):
-        self.pos = (self.pos.x + xd, self.pos.y + yd)
+        self.pos = Point(self.pos.x + xd, self.pos.y + yd)
         self.escape_btn = (
-            self.pos.x + self.size.x - (24 - self.cote_c) // 2 - self.cote_c,
-            self.pos.y + (EPAISSEUR_BARRE - self.cote_c) // 2,
+            self.size.x - (24 - self.cote_c) // 2 - self.cote_c,
+            (EPAISSEUR_BARRE - self.cote_c) // 2,
             self.cote_c,
             self.cote_c
         )
@@ -87,7 +87,7 @@ class Window:
     def trigger_vitals(self, event):
         if event.type == MOUSEBUTTONDOWN:
             x, y = event.pos
-            if self.pos.x <= x <= self.pos.x + self.size.x and self.pos.y <= y <= self.pos.y + EPAISSEUR_BARRE:
+            if 0 <= x <= 0 + self.size.x and 0 <= y <= 0 + EPAISSEUR_BARRE:
                 self.clic_on_barre = True
         if event.type == MOUSEMOTION:
             if self.clic_on_barre:
@@ -99,7 +99,6 @@ class Window:
             x, y = event.pos
             if not self.fullscreen and self.escape_btn[0] <= x <= self.escape_btn[0] + self.escape_btn[2] \
                     and self.escape_btn[1] <= y <= self.escape_btn[1] + self.escape_btn[3]:
-                pygame.draw.rect(self.screen, BLACK, (0, 0) + self.screen.get_size())
                 self.state = WStates.UNACTIVE
 
     def trigger_user(self, event):

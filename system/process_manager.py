@@ -96,21 +96,23 @@ class ProcessManager:
     def add_window_and_init(window, *args):
         i = window(*args)
         ProcessManager.windows().append(i)
+        i.id = ProcessManager.ID
         ProcessManager.instance._execution_datas[i.id] = {
             'exc_times': [],
             'draw_times': []
         }
-        i.id = ProcessManager.ID + 1
+        ProcessManager.ID += 1
 
     @staticmethod
     def init_windows_with(*args):
         for i, window in enumerate(ProcessManager.windows()):
             ProcessManager.windows()[i] = window(*args)
+            ProcessManager.windows()[i].id = ProcessManager.ID
             ProcessManager.instance._execution_datas[ProcessManager.windows()[i].id] = {
                 'exc_times': [],
                 'draw_times': []
             }
-            ProcessManager.windows()[i].id = ProcessManager.ID + 1
+            ProcessManager.ID += 1
 
     @staticmethod
     def reoder_ifalive():
