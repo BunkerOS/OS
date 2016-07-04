@@ -47,7 +47,8 @@ class SeveciShell(Window):
 
     def update(self):
         try:
-            self.output += next(self.file) + "\n"
+            if self.file:
+                self.output += next(self.file) + "\n"
         except StopIteration:
             pass
         self.texts["content"] = []

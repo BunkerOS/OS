@@ -1,5 +1,6 @@
 from .utils import *
 
+_id = 0
 
 class Widget:
     def __init__(self, screen, pos=(0, 0), size=(0, 0), bg_color=BLACK, fg_color=WHITE):
@@ -9,7 +10,9 @@ class Widget:
         self.bg_color = bg_color
         self.fg_color = fg_color
         self._content = pygame.Surface(tuple(self.size))
-        self.id = None
+        global _id
+        self.id = _id
+        _id += 1
 
     def draw_vitals(self):
         pygame.draw.rect(self._content, self.bg_color, tuple(self.pos) + tuple(self.size))
@@ -38,18 +41,29 @@ class Widget:
 
 class Button(Widget):
     def __init__(self, screen, pos=(0, 0), size=(0, 0), bg_color=BLACK, fg_color=WHITE, mouseover_color=GREY, text="", text_centered=False):
-        Widget.__init__(
-            self,
-            pos,
-            size,
-            bg_color,
-            fg_color
+        super().__init__(
+            screen,
+            pos=pos,
+            size=size,
+            bg_color=bg_color,
+            fg_color=fg_color
         )
         self.mouseover_color = mouseover_color
-        self.text = [font.render(t, 1, self.fg_color) for t in self.text.split("\n")]
+        self.text = [font.render(t, 1, self.fg_color) for t in text.split("\n")]
         self.text_centered = text_centered
         self.clicked = False
+        self.called = False
         self.mouseover = False
+        self.func, fargs = None, []
+
+    def register(self, func, *args):
+        self.func = func
+        self.fargs = args
+
+    def update(self):
+        if self.clicked and self.func and not self.called:
+            self.func(*self.fargs)
+            self.called = True
 
     def draw_vitals(self):
         if not self.mouseover and self.mouseover_color:
@@ -73,6 +87,7 @@ class Button(Widget):
         if event.type == MOUSEBUTTONUP:
             if self.clicked:
                 self.clicked = False
+                self.called = False
         xp, yp = pygame.mouse.get_pos()
         if self.pos.x <= xp <= self.pos.x + self.size.x and self.pos.y <= yp <= self.pos.y + self.size.y:
             self.mouseover = True
@@ -82,14 +97,14 @@ class Button(Widget):
 
 class Label(Widget):
     def __init__(self, screen, pos=(0, 0), size=(0, 0), bg_color=BLACK, fg_color=WHITE, text="", text_centered=False):
-        Widget.__init__(
-            self,
-            pos,
-            size,
-            bg_color,
-            fg_color
+        super().__init__(
+            screen,
+            pos=pos,
+            size=size,
+            bg_color=bg_color,
+            fg_color=fg_color
         )
-        self.text = [font.render(t, 1, self.fg_color) for t in self.text.split("\n")]
+        self.text = [font.render(t, 1, self.fg_color) for t in text.split("\n")]
         self.text_centered = text_centered
 
     def draw_vitals(self):
@@ -106,15 +121,15 @@ class Label(Widget):
 
 class CheckBox(Widget):
     def __init__(self, screen, pos=(0, 0), size=(0, 0), bg_color=BLACK, fg_color=WHITE, mouseover_color=GREY, text="", text_centered=False, checkbox_color=BLUE):
-        Widget.__init__(
-            self,
-            pos,
-            size,
-            bg_color,
-            fg_color
+        super().__init__(
+            screen,
+            pos=pos,
+            size=size,
+            bg_color=bg_color,
+            fg_color=fg_color
         )
         self.mouseover_color = mouseover_color
-        self.text = [font.render(t, 1, self.fg_color) for t in self.text.split("\n")]
+        self.text = [font.render(t, 1, self.fg_color) for t in text.split("\n")]
         self.text_centered = text_centered
         self.checkbox_color = checkbox_color
         self.checked = False
@@ -151,19 +166,30 @@ class CheckBox(Widget):
 
 class ImageWithAlt(Widget):
     def __init__(self, screen, pos=(0, 0), size=(0, 0), bg_color=BLACK, fg_color=WHITE, image="", mouseover_color=GREY, text="", text_centered=False):
-        Widget.__init__(
-            self,
-            pos,
-            size,
-            bg_color,
-            fg_color
+        super().__init__(
+            screen,
+            pos=pos,
+            size=size,
+            bg_color=bg_color,
+            fg_color=fg_color
         )
         self.mouseover_color = mouseover_color
-        self.text = [font.render(t, 1, self.fg_color) for t in self.text.split("\n")]
+        self.text = [font.render(t, 1, self.fg_color) for t in text.split("\n")]
         self.text_centered = text_centered
         self.clicked = False
         self.mouseover = False
+        self.called = False
         self.image = pygame.image.load(image).convert_alpha()
+        self.func, fargs = None, []
+
+    def register(self, func, *args):
+        self.func = func
+        self.fargs = args
+
+    def update(self):
+        if self.clicked and self.func and not self.called:
+            self.func(*self.fargs)
+            self.called = True
 
     def draw_vitals(self):
         if not self.mouseover and self.mouseover_color:
@@ -179,3 +205,18 @@ class ImageWithAlt(Widget):
                 y += t.get_height() + 5
             else:
                 self._content.blit(t, (self.size.x // 2 - t.get_width() // 2, self.size.y // 2 + (i - len(self.text) // 2) * t.get_height() // 2 + self.image.get_height()))
+
+    def trigger_vitals(self, event):
+        if event.type == MOUSEBUTTONDOWN:
+            x, y = event.pos
+            if self.pos.x <= x <= self.pos.x + self.size.x and self.pos.y <= y <= self.pos.y + self.size.y:
+                self.clicked = True
+        if event.type == MOUSEBUTTONUP:
+            if self.clicked:
+                self.clicked = False
+                self.called = False
+        xp, yp = pygame.mouse.get_pos()
+        if self.pos.x <= xp <= self.pos.x + self.size.x and self.pos.y <= yp <= self.pos.y + self.size.y:
+            self.mouseover = True
+        else:
+            self.mouseover = False

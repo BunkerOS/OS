@@ -1,32 +1,25 @@
 from . import Window
 from .. import widgets
 from ..utils import *
-import re
 
 
-class EditeurTexte(Window):
+class Explorer(Window):
     def __init__(self, screen):
         Window.__init__(
             self,
             screen,
-            titre="Text Editor",
+            titre="Explorer",
             version=1.0,
             pos=(0, 0),
-            size=(screen.get_width() // 2, screen.get_height() // 2),
+            size=(500, 300),
             couleur=WHITE
         )
         self.texts = {
-            "content": [],
-            "cli_datas": {"line": 0, "char": 0},
-            "cli": font.render("_", 1, RED)
+            "content": []
         }
         self.text = ""
         self.curseur = 0
         self.offsets = Point(0, 0)
-        self.widgets.append(widgets.Button(self._content, pos=(5, 0), size=(40, 25), bg_color=LIGHT_GREY, fg_color=BLACK, mouseover_color=GREY, text="Open", text_centered=True))
-        self.widgets.append(widgets.Button(self._content, pos=(50, 0), size=(40, 25), bg_color=LIGHT_GREY, fg_color=BLACK, mouseover_color=GREY, text="Save", text_centered=True))
-        self.widgets[0].register(print, "open")
-        self.widgets[1].register(print, "save")
 
     def draw_content(self):
         # fond
@@ -35,6 +28,9 @@ class EditeurTexte(Window):
 
         # barre menu
         pygame.draw.rect(self._content, LIGHT_GREY, (0, 0, self.size.x, y))
+        self._content.blit(self.texts["open"], (5, 5))
+        self._content.blit(self.texts["sep"], (10 + self.texts["open"].get_width(), 5))
+        self._content.blit(self.texts["save"], (15 + self.texts["open"].get_width() + self.texts["sep"].get_width(), 5))
 
         # texte
         for li, line in enumerate(self.texts["content"]):
@@ -65,6 +61,17 @@ class EditeurTexte(Window):
             else:
                 self.text += event.unicode
                 self.curseur += 1
+        if event.type == MOUSEBUTTONDOWN:
+            x, y = event.pos
+            # barre
+            if 0 <= y <= 25:
+                if 0 <= x <= self.texts["open"].get_width() + 5:
+                    # open
+                    pass
+                if self.texts["open"].get_width() + self.texts["sep"].get_width() + 10 <= x <= \
+                        self.texts["save"].get_width() + self.texts["open"].get_width() + self.texts["sep"].get_width() + 15:
+                    # save
+                    pass
 
     # TODO: ne générer que la partie visible du texte
     def update(self):
