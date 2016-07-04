@@ -40,6 +40,8 @@ class Window:
         self._blurw.convert_alpha()
         self._blurw.set_alpha(225)
 
+        self.widgets = []
+
     def update(self):
         pass
 
@@ -64,6 +66,8 @@ class Window:
             self.draw_content()
             if self.state == WStates.NOT_RESPONDING:
                 self._content.blit(self._blurw, (0, 0))
+            for wid in self.widgets:
+                wid.draw()
             self.screen.blit(self._content, (self.pos.x, self.pos.y + EPAISSEUR_BARRE if not self.fullscreen else self.pos.y))
 
     def set_alive(self, value=WStates.ACTIVE):
@@ -78,7 +82,7 @@ class Window:
     def move(self, xd, yd):
         self.pos = Point(self.pos.x + xd, self.pos.y + yd)
         self.escape_btn = (
-            self.size.x - (24 - self.cote_c) // 2 - self.cote_c,
+            self.size.x - (EPAISSEUR_BARRE - self.cote_c) // 2 - self.cote_c,
             (EPAISSEUR_BARRE - self.cote_c) // 2,
             self.cote_c,
             self.cote_c
@@ -107,3 +111,5 @@ class Window:
     def trigger(self, event):
         self.trigger_vitals(event)
         self.trigger_user(event)
+        for wid in self.widgets:
+            wid.trigger(event)
