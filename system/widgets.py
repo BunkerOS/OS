@@ -147,3 +147,35 @@ class CheckBox(Widget):
             self.mouseover = True
         else:
             self.mouseover = False
+
+
+class ImageWithAlt(Widget):
+    def __init__(self, screen, pos=(0, 0), size=(0, 0), bg_color=BLACK, fg_color=WHITE, image="", mouseover_color=GREY, text="", text_centered=False):
+        Widget.__init__(
+            self,
+            pos,
+            size,
+            bg_color,
+            fg_color
+        )
+        self.mouseover_color = mouseover_color
+        self.text = [font.render(t, 1, self.fg_color) for t in self.text.split("\n")]
+        self.text_centered = text_centered
+        self.clicked = False
+        self.mouseover = False
+        self.image = pygame.image.load(image).convert_alpha()
+
+    def draw_vitals(self):
+        if not self.mouseover and self.mouseover_color:
+            pygame.draw.rect(self._content, self.bg_color, tuple(self.pos) + tuple(self.size))
+        else:
+            if self.bg_color:
+                pygame.draw.rect(self._content, self.mouseover_color, tuple(self.pos) + tuple(self.size))
+        self._content.blit(self.image, (self._content.get_width() // 2 - self._content.get_width(), 0))
+        y = 5 + self.image.get_height()
+        for i, t in enumerate(self.text):
+            if not self.text_centered:
+                self._content.blit(t, (5, y))
+                y += t.get_height() + 5
+            else:
+                self._content.blit(t, (self.size.x // 2 - t.get_width() // 2, self.size.y // 2 + (i - len(self.text) // 2) * t.get_height() // 2 + self.image.get_height()))
