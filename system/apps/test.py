@@ -25,5 +25,5 @@ class App(Window):
     def trigger_user(self, event):
         pass
 
-    def update(self):
+    def update_user(self):
         pass

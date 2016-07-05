@@ -13,6 +13,7 @@ class PicViewer(Window):
             couleur=WHITE,
         )
         self.image = None
+        self.state = WStates.UNACTIVE
 
     def load_image(self, image):
         self.image = pygame.image.load(image).convert_alpha()

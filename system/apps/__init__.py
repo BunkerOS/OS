@@ -12,6 +12,9 @@ app_list.append(EditeurTexte)
 from .explorer import Explorer
 app_list.append(Explorer)
 
+from .paint import Paint
+app_list.append(Paint)
+
 from .keys_repeat import KeysRepeatWindow
 app_list.append(KeysRepeatWindow)
 
