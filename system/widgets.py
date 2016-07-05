@@ -14,6 +14,9 @@ class Widget:
         self.id = _id
         _id += 1
 
+    def move(self, mx, my):
+        self.pos.translate(mx, my)
+
     def draw_vitals(self):
         pass
 
@@ -81,7 +84,7 @@ class Button(Widget):
     def trigger_vitals(self, event):
         if event.type == MOUSEBUTTONDOWN:
             x, y = event.pos
-            if self.pos.x <= x <= self.pos.x + self.size.x and self.pos.y <= y <= self.pos.y + self.size.y:
+            if event.button == 1 and self.pos.x <= x <= self.pos.x + self.size.x and self.pos.y <= y <= self.pos.y + self.size.y:
                 self.clicked = True
         if event.type in (MOUSEBUTTONDOWN, MOUSEMOTION, MOUSEBUTTONUP):
             xp, yp = event.pos
@@ -149,7 +152,7 @@ class CheckBox(Widget):
     def trigger_vitals(self, event):
         if event.type == MOUSEBUTTONDOWN:
             x, y = event.pos
-            if self.pos.x <= x <= self.pos.x + self.size.x and self.pos.y <= y <= self.pos.y + self.size.y:
+            if event.button == 1 and self.pos.x <= x <= self.pos.x + self.size.x and self.pos.y <= y <= self.pos.y + self.size.y:
                 self.checked = not self.checked
         if event.type in (MOUSEBUTTONDOWN, MOUSEMOTION, MOUSEBUTTONUP):
             xp, yp = event.pos
@@ -203,7 +206,7 @@ class ImageWithAlt(Widget):
     def trigger_vitals(self, event):
         if event.type == MOUSEBUTTONDOWN:
             x, y = event.pos
-            if self.pos.x <= x <= self.pos.x + self.size.x and self.pos.y <= y <= self.pos.y + self.size.y:
+            if event.button == 1 and self.pos.x <= x <= self.pos.x + self.size.x and self.pos.y <= y <= self.pos.y + self.size.y:
                 self.clicked = True
         if event.type in (MOUSEBUTTONDOWN, MOUSEMOTION, MOUSEBUTTONUP):
             xp, yp = event.pos

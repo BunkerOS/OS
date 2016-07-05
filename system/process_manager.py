@@ -17,6 +17,19 @@ class ProcessManager:
         self._current_session = "NONE"
 
     @staticmethod
+    def access_window(name, func_name, *args):
+        name = "[%s]" % name
+        for i, win in enumerate(ProcessManager.windows()):
+            if win.get_title()[:len(name)] == name:
+                if win.state in (WStates.ACTIVE, WStates.NOT_RESPONDING):
+                    win.state = WStates.ACTIVE
+                ProcessManager.set_as_toplevel(i)
+                if hasattr(win, func_name):
+                    return getattr(win, func_name)(*args)
+                return -1
+        return -1
+
+    @staticmethod
     def session():
         return ProcessManager.instance._current_session
 

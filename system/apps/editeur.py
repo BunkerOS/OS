@@ -28,6 +28,13 @@ class EditeurTexte(Window):
         self.widgets[0].register(print, "open")
         self.widgets[1].register(print, "save")
 
+    def open(self, path):
+        with open(path, encoding="utf-8") as file:
+            self.text = file.read()
+        self.offsets.x = 0
+        self.offsets.y = 0
+        self.curseur = 0
+
     def draw_content(self):
         # fond
         pygame.draw.rect(self._content, self.couleur, tuple(self.offsets) + tuple(self.size))

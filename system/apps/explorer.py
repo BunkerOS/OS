@@ -31,7 +31,16 @@ class Explorer(Window):
         self.load_dir("users/%s/" % ProcessManager.session())
 
     def launch_with(self, path):
-        print(path)
+        name, ext = os.path.basename(path).split('.')
+        if ext == "png":
+            ProcessManager.access_window("Picture Viewer", "load_image", path)
+        elif ext == "wav":
+            print("reading music :p")
+        elif ext == "sev":
+            ProcessManager.access_window("Seveci Shell", "start", path)
+        else:
+            # bad, code, py et tous les autres
+            ProcessManager.access_window("Text Editor", "open", path)
 
     def load_dir(self, path, do_not_log=False):
         if not do_not_log:
@@ -83,9 +92,11 @@ class Explorer(Window):
     def trigger_user(self, event):
         if event.type == KEYDOWN:
             if event.key in (K_BACKSPACE, K_LEFT):
-                if len(self.history) > 1:
+                try:
                     self.hcursor -= 1
                     self.load_dir(self.history[self.hcursor], True)
+                except IndexError:
+                    pass
             if event.key == K_RIGHT:
                 try:
                     if self.hcursor + 1 < 0:
@@ -95,6 +106,14 @@ class Explorer(Window):
                     self.load_dir(self.history[self.hcursor], True)
                 except IndexError:
                     pass
+        if event.type == MOUSEBUTTONDOWN:
+            if event.button in (4, 5):
+                for wid in self.widgets:
+                    if isinstance(wid, widgets.ImageWithAlt):
+                        if event.button == 4:
+                            wid.move(0, -10)
+                        else:
+                            wid.move(0, +10)
 
     def update_user(self):
         pass

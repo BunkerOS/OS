@@ -2,6 +2,7 @@ from collections import namedtuple
 import math
 import time
 import operator as op
+from ..process_manager import ProcessManager
 
 
 Token = namedtuple('Token', ['typ', 'value', 'line', 'column'])
@@ -82,7 +83,8 @@ def standard_env():
         # autres
         'time': time.time, 'round': round, 'abs': abs, 'zip': lambda *x: list(zip(*x)),
         'map': lambda *x: list(map(*x)), 'max': max, 'min': min,
-        'print': lambda *x: print(mtoa(*x)), 'input': input,
+        'print': lambda *x: ProcessManager.access_window("Seveci Shell", "print", mtoa(*x)),
+        'input': lambda x: ProcessManager.access_window("Seveci Shell", "input", x),
         'include': lambda x: _env.update({x: __import__(x)}),
         'load': lambda x: (_env.update(load(x)), None)[1],
 
