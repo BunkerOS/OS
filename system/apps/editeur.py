@@ -23,8 +23,8 @@ class EditeurTexte(Window):
         self.text = ""
         self.curseur = 0
         self.offsets = Point(0, 0)
-        self.widgets.append(widgets.Button(self._content, pos=(5, 0), size=(40, 25), bg_color=LIGHT_GREY, fg_color=BLACK, mouseover_color=GREY, text="Open", text_centered=True))
-        self.widgets.append(widgets.Button(self._content, pos=(100, 0), size=(40, 25), bg_color=LIGHT_GREY, fg_color=BLACK, mouseover_color=GREY, text="Save", text_centered=True))
+        self.widgets.append(widgets.Button(self._content, pos=(0, 0), size=(40, 25), bg_color=LIGHT_GREY, fg_color=BLACK, mouseover_color=GREY, text="Open", text_centered=True))
+        self.widgets.append(widgets.Button(self._content, pos=(45, 0), size=(40, 25), bg_color=LIGHT_GREY, fg_color=BLACK, mouseover_color=GREY, text="Save", text_centered=True))
         self.widgets[0].register(print, "open")
         self.widgets[1].register(print, "save")
 
@@ -72,7 +72,7 @@ class EditeurTexte(Window):
                 self.offsets.y += sample_text.get_height()
 
     # TODO: ne générer que la partie visible du texte
-    def update(self):
+    def update_user(self):
         text = self.text.split('\n')
         self.texts['content'] = []
         tot = 0

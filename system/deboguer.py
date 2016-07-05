@@ -16,7 +16,7 @@ def info(kind, value, tb):
         if isinstance(o, str):
             output2 += o.split("\n")
     print("Création du contenu de la fenêtre")
-    text = [font.render(o, 1, BLACK) for o in output2]
+    text = [font_petite.render(o, 1, BLACK) for o in output2 if o]
     logo = pygame.image.load("system/resx/logo.png").convert_alpha()
     x = 50
     y = logo.get_height() + 50

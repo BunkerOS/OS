@@ -42,6 +42,13 @@ class Point:
         yield self.y
 
 
+def os_path_split(path):
+    tmp = path.split("/")
+    w = []
+    for i in tmp:
+        w += i.split("\\")
+    return w
+
 RED = (180, 0, 0)
 GREEN = (0, 180, 0)
 BLUE = (0, 0, 180)

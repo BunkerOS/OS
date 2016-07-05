@@ -30,6 +30,7 @@ class ProcessManagerWindow(Window):
         pygame.draw.rect(self._content, self.couleur, (0, 0) + tuple(self.size))
 
         self._content.blit(self.texts["session"], (0, 0))
+        self._content.blit(font_petite.render(" | FPS: %3.2f" % ProcessManager.clock().get_fps(), 1, BLACK), (self.texts["session"].get_width(), 0))
         self._content.blit(self.texts["name"], (0, 30))
         self._content.blit(self.texts["update"], (175, 30))
         self._content.blit(self.texts["draw"], (275, 30))

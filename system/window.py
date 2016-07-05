@@ -39,8 +39,13 @@ class Window:
 
         self.widgets = []
 
-    def update(self):
+    def update_user(self):
         pass
+
+    def update(self):
+        for wid in self.widgets:
+            wid.update()
+        self.update_user()
 
     def draw_vitals(self):
         # contour

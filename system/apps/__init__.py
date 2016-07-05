@@ -9,6 +9,9 @@ app_list = []
 from .editeur import EditeurTexte
 app_list.append(EditeurTexte)
 
+from .explorer import Explorer
+app_list.append(Explorer)
+
 from .keys_repeat import KeysRepeatWindow
 app_list.append(KeysRepeatWindow)
 

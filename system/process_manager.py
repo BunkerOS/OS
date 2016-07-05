@@ -37,6 +37,7 @@ class ProcessManager:
                 ProcessManager.instance._execution_datas[process.id]['exc_times'].append((time.time() - start) * 1000)
             except Exception:
                 process.state = WStates.NOT_RESPONDING
+                print(process.get_title(), "a planté")
         else:
             ProcessManager.instance._execution_datas[process.id]['draw_times'].append(0.0)
         if len(ProcessManager.instance._execution_datas[process.id]['exc_times']) > ProcessManager.MAX:
@@ -52,6 +53,7 @@ class ProcessManager:
                 ProcessManager.instance._execution_datas[process.id]['draw_times'].append((time.time() - start) * 1000)
             except Exception:
                 process.state = WStates.NOT_RESPONDING
+                print(process.get_title(), "a planté")
         else:
             ProcessManager.instance._execution_datas[process.id]['draw_times'].append(0.0)
         if len(ProcessManager.instance._execution_datas[process.id]['draw_times']) > ProcessManager.MAX:

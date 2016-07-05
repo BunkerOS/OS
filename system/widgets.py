@@ -60,16 +60,16 @@ class Button(Widget):
         self.fargs = args
 
     def update(self):
-        if self.clicked and self.func:
+        if self.clicked and self.func != None:
             self.func(*self.fargs)
             self.called = False
             self.clicked = False
 
     def draw_vitals(self):
         if not self.mouseover:
-            pygame.draw.rect(self._content, self.bg_color, tuple(self.pos) + tuple(self.size))
+            pygame.draw.rect(self._content, self.bg_color, (0, 0) + tuple(self.size))
         else:
-            pygame.draw.rect(self._content, self.mouseover_color, tuple(self.pos) + tuple(self.size))
+            pygame.draw.rect(self._content, self.mouseover_color, (0, 0) + tuple(self.size))
         y = 5
         for i, t in enumerate(self.text):
             if not self.text_centered:
@@ -104,7 +104,7 @@ class Label(Widget):
         self.text_centered = text_centered
 
     def draw_vitals(self):
-        pygame.draw.rect(self._content, self.bg_color, tuple(self.pos) + tuple(self.size))
+        pygame.draw.rect(self._content, self.bg_color, (0, 0) + tuple(self.size))
         y = 5
         for i, t in enumerate(self.text):
             if not self.text_centered:
@@ -132,9 +132,9 @@ class CheckBox(Widget):
 
     def draw_vitals(self):
         if not self.mouseover:
-            pygame.draw.rect(self._content, self.bg_color, tuple(self.pos) + tuple(self.size))
+            pygame.draw.rect(self._content, self.bg_color, (0, 0) + tuple(self.size))
         else:
-            pygame.draw.rect(self._content, self.mouseover_color, tuple(self.pos) + tuple(self.size))
+            pygame.draw.rect(self._content, self.mouseover_color, (0, 0) + tuple(self.size))
         pygame.draw.rect(self._content, self.checkbox_color, (self.pos.x, self.pos.y, 10, 10), 2)
         if self.checked:
             pygame.draw.rect(self._content, self.checkbox_color, (self.pos.x + 3, self.pos.y + 3, 4, 4))
@@ -160,7 +160,7 @@ class CheckBox(Widget):
 
 
 class ImageWithAlt(Widget):
-    def __init__(self, screen, pos=(0, 0), size=(0, 0), bg_color=BLACK, fg_color=WHITE, image="", mouseover_color=GREY, text="", text_centered=False):
+    def __init__(self, screen, pos=(0, 0), size=(0, 0), bg_color=BLACK, fg_color=WHITE, image=None, mouseover_color=GREY, text="", text_centered=False):
         super().__init__(
             screen,
             pos=pos,
@@ -173,7 +173,7 @@ class ImageWithAlt(Widget):
         self.text_centered = text_centered
         self.clicked = False
         self.mouseover = False
-        self.image = pygame.image.load(image).convert_alpha()
+        self.image = image
         self.func, fargs = None, []
 
     def register(self, func, *args):
@@ -187,17 +187,18 @@ class ImageWithAlt(Widget):
 
     def draw_vitals(self):
         if not self.mouseover:
-            pygame.draw.rect(self._content, self.bg_color, tuple(self.pos) + tuple(self.size))
+            pygame.draw.rect(self._content, self.bg_color, (0, 0) + tuple(self.size))
         else:
-            pygame.draw.rect(self._content, self.mouseover_color, tuple(self.pos) + tuple(self.size))
-        self._content.blit(self.image, (self._content.get_width() // 2 - self._content.get_width(), 0))
-        y = 5 + self.image.get_height()
-        for i, t in enumerate(self.text):
-            if not self.text_centered:
-                self._content.blit(t, (5, y))
-                y += t.get_height() + 5
-            else:
-                self._content.blit(t, (self.size.x // 2 - t.get_width() // 2, self.size.y // 2 + (i - len(self.text) // 2) * t.get_height() // 2 + self.image.get_height()))
+            pygame.draw.rect(self._content, self.mouseover_color, (0, 0) + tuple(self.size))
+        if self.image:
+            self._content.blit(self.image, (self._content.get_width() // 2 - self.image.get_width() // 2, 5))
+            y = 10 + self.image.get_height()
+            for i, t in enumerate(self.text):
+                if not self.text_centered:
+                    self._content.blit(t, (5, y))
+                    y += t.get_height() + 5
+                else:
+                    self._content.blit(t, (self.size.x // 2 - t.get_width() // 2, self.size.y // 2 + (i - len(self.text) // 2 - 1) * t.get_height() // 2 + y // 2))
 
     def trigger_vitals(self, event):
         if event.type == MOUSEBUTTONDOWN:

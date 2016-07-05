@@ -1,6 +1,11 @@
 from . import Window
 from .. import widgets
 from ..utils import *
+from ..process_manager import ProcessManager
+import os
+from glob import glob
+
+BLOC_SIZE = 100
 
 
 class Explorer(Window):
@@ -10,16 +15,61 @@ class Explorer(Window):
             screen,
             titre="Explorer",
             version=1.0,
-            pos=(0, 0),
-            size=(500, 300),
+            pos=(0, screen.get_height() - 4 * BLOC_SIZE),
+            size=(6 * BLOC_SIZE, 4 * BLOC_SIZE),
             couleur=WHITE
         )
-        self.texts = {
-            "content": []
+        self.texts = {}
+        self.images = {
+            os.path.basename(f).split('.')[0]: pygame.image.load(f).convert_alpha() for f in glob("system/resx/icons/*.png")
         }
-        self.text = ""
-        self.curseur = 0
         self.offsets = Point(0, 0)
+        self.history = []
+        self.files = []
+        self.hcursor = -1
+        self.directory = ""
+        self.load_dir("users/%s/" % ProcessManager.session())
+
+    def launch_with(self, path):
+        print(path)
+
+    def load_dir(self, path, do_not_log=False):
+        if not do_not_log:
+            self.history.append(path)
+        self.directory = path
+        self.widgets = []
+        self.files = []
+
+        for i, file in enumerate(glob(path + "*")):
+            self.files.append(file)
+
+            x, y = (i % 6) * BLOC_SIZE, (i // 6) * BLOC_SIZE + 25
+
+            kind = "fichier"
+            name, *ext = os.path.basename(file).split('.')
+            if ext == [] and name != "Apps":
+                kind = "dossier"
+            elif ext == [] and name == "Apps":
+                kind = "dossier-app"
+            elif ext == ['png']:
+                kind = "fichier-img"
+            elif ext == ['py']:
+                kind = "fichier-app"
+            elif ext == ['sev'] or ext == ['code']:
+                kind = "fichier-code"
+            elif ext == ['bad']:
+                kind == "fichier-data"
+            elif ext == ['wav']:
+                kind = "fichier-son"
+
+            self.widgets.append(widgets.ImageWithAlt(
+                self._content, pos=(x, y), size=(BLOC_SIZE, BLOC_SIZE), bg_color=WHITE, fg_color=BLACK,
+                image=self.images[kind], mouseover_color=LIGHT_GREY, text=os.path.basename(file), text_centered=True
+            ))
+            if kind in ("dossier", "dossier-app"):
+                self.widgets[-1].register(self.load_dir, file + "/")
+            else:
+                self.widgets[-1].register(self.launch_with, file)
 
     def draw_content(self):
         # fond
@@ -28,61 +78,23 @@ class Explorer(Window):
 
         # barre menu
         pygame.draw.rect(self._content, LIGHT_GREY, (0, 0, self.size.x, y))
-        self._content.blit(self.texts["open"], (5, 5))
-        self._content.blit(self.texts["sep"], (10 + self.texts["open"].get_width(), 5))
-        self._content.blit(self.texts["save"], (15 + self.texts["open"].get_width() + self.texts["sep"].get_width(), 5))
-
-        # texte
-        for li, line in enumerate(self.texts["content"]):
-            if li == self.texts["cli_datas"]["line"]:
-                self._content.blit(self.texts["cli"], (self.texts["cli_datas"]["char"] * sample_text.get_width(), y + 2))
-            self._content.blit(line, (0, y))
-            y += line.get_height() + 2
+        self._content.blit(font.render(os.path.join(*os_path_split(self.directory)), 1, BLACK), (0, 0))
 
     def trigger_user(self, event):
         if event.type == KEYDOWN:
-            if event.key == K_BACKSPACE:
-                self.text = self.text[:self.curseur] + self.text[self.curseur + 1:]
-                self.curseur -= 1
-            elif event.key == K_DELETE:
-                self.text = self.text[:self.curseur] + self.text[self.curseur + 1:]
-            elif event.key in (K_RETURN, K_KP_ENTER):
-                self.text += "\n"
-                self.curseur += 1
-            elif event.key == K_TAB:
-                self.text += " " * 4
-                self.curseur += 4
-            elif event.key == K_LEFT:
-                if self.curseur > 0:
-                    self.curseur -= 1
-            elif event.key == K_RIGHT:
-                if self.curseur < len(self.text) - 1:
-                    self.curseur += 1
-            else:
-                self.text += event.unicode
-                self.curseur += 1
-        if event.type == MOUSEBUTTONDOWN:
-            x, y = event.pos
-            # barre
-            if 0 <= y <= 25:
-                if 0 <= x <= self.texts["open"].get_width() + 5:
-                    # open
-                    pass
-                if self.texts["open"].get_width() + self.texts["sep"].get_width() + 10 <= x <= \
-                        self.texts["save"].get_width() + self.texts["open"].get_width() + self.texts["sep"].get_width() + 15:
-                    # save
+            if event.key in (K_BACKSPACE, K_LEFT):
+                if len(self.history) > 1:
+                    self.hcursor -= 1
+                    self.load_dir(self.history[self.hcursor], True)
+            if event.key == K_RIGHT:
+                try:
+                    if self.hcursor + 1 < 0:
+                        self.hcursor += 1
+                    else:
+                        raise IndexError
+                    self.load_dir(self.history[self.hcursor], True)
+                except IndexError:
                     pass
 
-    # TODO: ne générer que la partie visible du texte
-    def update(self):
-        text = self.text.split('\n')
-        self.texts['content'] = []
-        tot = 0
-        for li, line in enumerate(text):
-            for ch, char in enumerate(line):
-                if tot == self.curseur:
-                    self.texts["cli_datas"]["line"] = li
-                    self.texts["cli_datas"]["char"] = ch
-                    break
-                tot += 1
-            self.texts['content'].append(font.render(line, 1, BLACK))
+    def update_user(self):
+        pass
