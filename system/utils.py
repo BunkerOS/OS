@@ -80,3 +80,5 @@ pygame.font.init()
 font = pygame.font.Font("system/resx/fonts/Hack-Regular.ttf", 16)
 font_petite = pygame.font.Font("system/resx/fonts/Hack-Regular.ttf", 12)
 sample_text = font.render("a", 1, BLACK)
+
+EPAISSEUR_BARRE = 24

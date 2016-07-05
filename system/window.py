@@ -1,9 +1,6 @@
 from .utils import *
 
 
-EPAISSEUR_BARRE = 24
-
-
 class Window:
     def __init__(self, screen, titre="", version=1.0, pos=(0, 0), size=(0, 0), couleur=(20, 20, 20),
                  contour_couleur=BLACK, couleur_barre=GREY, movable=True, fullscreen=False,
@@ -64,10 +61,10 @@ class Window:
             if not self.fullscreen:
                 self.draw_vitals()
             self.draw_content()
-            if self.state == WStates.NOT_RESPONDING:
-                self._content.blit(self._blurw, (0, 0))
             for wid in self.widgets:
                 wid.draw()
+            if self.state == WStates.NOT_RESPONDING:
+                self._content.blit(self._blurw, (0, 0))
             self.screen.blit(self._content, (self.pos.x, self.pos.y + EPAISSEUR_BARRE if not self.fullscreen else self.pos.y))
 
     def set_alive(self, value=WStates.ACTIVE):
@@ -91,7 +88,7 @@ class Window:
     def trigger_vitals(self, event):
         if event.type == MOUSEBUTTONDOWN:
             x, y = event.pos
-            if 0 <= x <= 0 + self.size.x and 0 <= y <= 0 + EPAISSEUR_BARRE:
+            if 0 <= x <= self.size.x and 0 <= y <= EPAISSEUR_BARRE:
                 self.clic_on_barre = True
         if event.type == MOUSEMOTION:
             if self.clic_on_barre:
@@ -111,5 +108,7 @@ class Window:
     def trigger(self, event):
         self.trigger_vitals(event)
         self.trigger_user(event)
+        if event.type in (MOUSEBUTTONUP, MOUSEMOTION, MOUSEBUTTONDOWN):
+            event.pos = (event.pos[0], event.pos[1] - EPAISSEUR_BARRE)
         for wid in self.widgets:
             wid.trigger(event)

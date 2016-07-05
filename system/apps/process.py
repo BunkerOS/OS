@@ -13,23 +13,29 @@ class ProcessManagerWindow(Window):
             titre="Process Manager",
             version=1.0,
             pos=(50, 50),
-            size=(350, 500),
+            size=(450, 500),
             couleur=WHITE
         )
         self.max_update = -1
+        self.texts = {
+            "name": font_petite.render("NAME", 1, BLACK),
+            "update": font_petite.render("UPDATE (ms)", 1, BLACK),
+            "draw": font_petite.render("DRAW (ms)", 1, BLACK),
+            "status": font_petite.render("STATUS", 1, BLACK),
+            "session": font_petite.render("Running under : %s" % ProcessManager.session(), 1, BLACK)
+        }
 
     def draw_content(self):
         # fond
         pygame.draw.rect(self._content, self.couleur, (0, 0) + tuple(self.size))
 
-        text = font_petite.render("NAME", 1, BLACK)
-        text2 = font_petite.render("UPDATE (ms)", 1, BLACK)
-        text3 = font_petite.render("STATUS", 1, BLACK)
-        self._content.blit(text, (0, 0))
-        self._content.blit(text2, (175, 0))
-        self._content.blit(text3, (275, 0))
+        self._content.blit(self.texts["session"], (0, 0))
+        self._content.blit(self.texts["name"], (0, 30))
+        self._content.blit(self.texts["update"], (175, 30))
+        self._content.blit(self.texts["draw"], (275, 30))
+        self._content.blit(self.texts["status"], (375, 30))
 
-        y, h = 30, 15
+        y, h = 50, 15
         s = "UNKNOW"
         for window in ProcessManager.windows():
             if window.state == WStates.ACTIVE:
@@ -41,6 +47,7 @@ class ProcessManagerWindow(Window):
 
             name = font_petite.render(window.get_title(), 1, BLACK)
             status = font_petite.render(s, 1, BLACK)
+
             if len(ProcessManager.execution_datas()[window.id]['exc_times']) >= 1:
                 t = (sum(ProcessManager.execution_datas()[window.id]['exc_times']) / len(ProcessManager.execution_datas()[window.id]['exc_times']))
                 if t > self.max_update:
@@ -48,19 +55,30 @@ class ProcessManagerWindow(Window):
                 dt = "%3.2f" % t
             else:
                 dt = "NONE"
-            if self.max_update != -1:
+            if len(ProcessManager.execution_datas()[window.id]['draw_times']) >= 1:
+                t = (sum(ProcessManager.execution_datas()[window.id]['draw_times']) / len(ProcessManager.execution_datas()[window.id]['draw_times']))
+                draw = "%3.2f" % t
+            else:
+                draw = "NONE"
+
+            if self.max_update != -1 and dt != "NONE":
                 if float(dt) <= 0.25 * self.max_update:
                     pygame.draw.rect(self._content, LIGHT_BLUE, (0, y, self.size.x, h))
-                elif 0.25 < float(dt) <= 0.5 * self.max_update:
+                elif 0.25 * self.max_update < float(dt) <= 0.5 * self.max_update:
                     pygame.draw.rect(self._content, LIGHT_GREEN, (0, y, self.size.x, h))
-                elif 0.5 < float(dt) <= 0.75 * self.max_update:
+                elif 0.5 * self.max_update < float(dt) <= 0.75 * self.max_update:
                     pygame.draw.rect(self._content, LIGHT_YELLOW, (0, y, self.size.x, h))
-                elif 0.75 < float(dt):
+                elif 0.75 * self.max_update < float(dt):
                     pygame.draw.rect(self._content, LIGHT_RED, (0, y, self.size.x, h))
+
             dt = font_petite.render(dt, 1, BLACK)
+            draw = font_petite.render(draw, 1, BLACK)
+
             self._content.blit(name, (4, y))
-            self._content.blit(dt, (175, y))
-            self._content.blit(status, (275, y))
+            self._content.blit(dt, (200, y))
+            self._content.blit(draw, (275, y))
+            self._content.blit(status, (375, y))
+
             y += h
 
     def trigger_user(self, event):

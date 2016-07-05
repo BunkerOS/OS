@@ -12,15 +12,15 @@ class KeysRepeatWindow(Window):
             screen,
             titre="Keys Repeat Setting",
             version=1.0,
-            pos=(50, 50),
+            pos=(screen.get_width() - 400, screen.get_height() - 170 - EPAISSEUR_BARRE),
             size=(400, 170),
             couleur=WHITE
         )
         self.before, self.then = "200", "100"
         self.changing_first = True
         self.texts = {
-            "ex": font.render("First box to set the time before repeating", 1, BLACK),
-            "ex2": font.render("Second box to set the time betweent each repeat", 1, BLACK),
+            "ex": font_petite.render("1st box:set the time before repeating", 1, BLACK),
+            "ex2": font_petite.render("2nd box:set the time between each repeat", 1, BLACK),
             "done": font.render("Done !", 1, BLACK)
         }
         self.box1 = (10, 60, 100, 100)

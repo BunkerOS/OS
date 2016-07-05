@@ -121,7 +121,7 @@ class Connect:
                     if 0 <= x <= self.quitter.get_width() and self.screen.get_height() - self.quitter.get_height() <= y <= self.screen.get_height():
                         exit()
                 if event.type == KEYDOWN:
-                    if event.key == K_RETURN:
+                    if event.key in (K_RETURN, K_KP_ENTER):
                         self._check()
                     elif event.key == K_ESCAPE:
                         self.done = True

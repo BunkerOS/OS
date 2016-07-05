@@ -17,6 +17,10 @@ class ProcessManager:
         self._current_session = "NONE"
 
     @staticmethod
+    def session():
+        return ProcessManager.instance._current_session
+
+    @staticmethod
     def set_session(name):
         ProcessManager.instance._current_session = name
 

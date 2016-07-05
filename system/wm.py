@@ -102,19 +102,19 @@ class DesktopManager:
         self.screen.blit(self._content, (self.tskb_size[0], 0))
 
     def draw_main_menu(self):
-        pygame.draw.rect(self._content, PURPLE, (0, 0, 250, 375))
+        pygame.draw.rect(self._content, PURPLE, (0, 0, 350, 375))
         self._content.blit(self.texts['bapps'], (10, 10))
-        self._content.blit(self.texts['uapps'], (220 - self.texts['uapps'].get_width(), 10))
+        self._content.blit(self.texts['uapps'], (320 - self.texts['uapps'].get_width(), 10))
         y = 30
         for i, bapp in enumerate(self.apps):
             self._content.blit(bapp[1], (10, y + i * 20))
         for i, uapp in enumerate(self.dl_apps):
-            self._content.blit(uapp[1], (220 - self.texts['uapps'].get_width(), y + i * 20))
+            self._content.blit(uapp[1], (320 - self.texts['uapps'].get_width(), y + i * 20))
         pygame.draw.rect(self._content, GREEN, (
-            238 - self.texts['load'].get_width(), 363 - self.texts['load'].get_height(),
+            338 - self.texts['load'].get_width(), 363 - self.texts['load'].get_height(),
             4 + self.texts['load'].get_width(), 4 + self.texts['load'].get_height()
         ))
-        self._content.blit(self.texts['load'], (240 - self.texts['load'].get_width(), 365 - self.texts['load'].get_height()))
+        self._content.blit(self.texts['load'], (340 - self.texts['load'].get_width(), 365 - self.texts['load'].get_height()))
 
     def draw_task_bar(self):
         pygame.draw.rect(self.screen, self.cl_tskb, (0, 0) + self.tskb_size)
@@ -172,7 +172,7 @@ class DesktopManager:
             # clic dans le menu
             if self.show_main_menu and event.type == MOUSEBUTTONDOWN:
                 x, y = event.pos
-                dimension = (238 - self.texts['load'].get_width(), 363 - self.texts['load'].get_height(),
+                dimension = (338 - self.texts['load'].get_width(), 363 - self.texts['load'].get_height(),
                              4 + self.texts['load'].get_width(), 4 + self.texts['load'].get_height())
                 if dimension[0] <= x <= dimension[0] + dimension[2] and dimension[1] <= y <= dimension[1] + dimension[3]:
                     self.load_apps_list()

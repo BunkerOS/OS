@@ -21,6 +21,7 @@ class SeveciShell(Window):
         self.output = ""
         self.file = None
         self.offset = 0
+        self.state = WStates.UNACTIVE
 
     def start(self, file):
         self.file = iter(sh.eval_and_exec(file))

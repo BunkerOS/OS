@@ -11,7 +11,7 @@ class EditeurTexte(Window):
             screen,
             titre="Text Editor",
             version=1.0,
-            pos=(0, 0),
+            pos=(screen.get_width() // 2, 0),
             size=(screen.get_width() // 2, screen.get_height() // 2),
             couleur=WHITE
         )
@@ -24,7 +24,7 @@ class EditeurTexte(Window):
         self.curseur = 0
         self.offsets = Point(0, 0)
         self.widgets.append(widgets.Button(self._content, pos=(5, 0), size=(40, 25), bg_color=LIGHT_GREY, fg_color=BLACK, mouseover_color=GREY, text="Open", text_centered=True))
-        self.widgets.append(widgets.Button(self._content, pos=(50, 0), size=(40, 25), bg_color=LIGHT_GREY, fg_color=BLACK, mouseover_color=GREY, text="Save", text_centered=True))
+        self.widgets.append(widgets.Button(self._content, pos=(100, 0), size=(40, 25), bg_color=LIGHT_GREY, fg_color=BLACK, mouseover_color=GREY, text="Save", text_centered=True))
         self.widgets[0].register(print, "open")
         self.widgets[1].register(print, "save")
 
@@ -33,15 +33,15 @@ class EditeurTexte(Window):
         pygame.draw.rect(self._content, self.couleur, tuple(self.offsets) + tuple(self.size))
         y = 25
 
-        # barre menu
-        pygame.draw.rect(self._content, LIGHT_GREY, (0, 0, self.size.x, y))
-
         # texte
         for li, line in enumerate(self.texts["content"]):
             if li == self.texts["cli_datas"]["line"]:
-                self._content.blit(self.texts["cli"], (self.texts["cli_datas"]["char"] * sample_text.get_width(), y + 2))
-            self._content.blit(line, (0, y))
+                self._content.blit(self.texts["cli"], (self.texts["cli_datas"]["char"] * sample_text.get_width() + self.offsets.x, y + 2 + self.offsets.y))
+            self._content.blit(line, (self.offsets.x, y + self.offsets.y))
             y += line.get_height() + 2
+
+        # barre menu
+        pygame.draw.rect(self._content, LIGHT_GREY, (0, 0, self.size.x, 25))
 
     def trigger_user(self, event):
         if event.type == KEYDOWN:
@@ -65,6 +65,11 @@ class EditeurTexte(Window):
             else:
                 self.text += event.unicode
                 self.curseur += 1
+        if event.type == MOUSEBUTTONDOWN:
+            if event.button == 4:
+                self.offsets.y -= sample_text.get_height()
+            elif event.button == 5:
+                self.offsets.y += sample_text.get_height()
 
     # TODO: ne générer que la partie visible du texte
     def update(self):
